@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-const heroWords = ["Calculate", "Reduce", "Offset"];
+const heroWords = ["Measure", "Reduce", "Offset"];
 
 const ActionWordCarousel = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);

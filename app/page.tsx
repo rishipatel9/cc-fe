@@ -7,42 +7,50 @@ import Footer from "@/components/Footer";
 import Blogs from "@/components/Blogs";
 import Stacking from "@/components/Stacking";
 import Hero from "@/components/Hero";
+import TrustedBySection from "@/components/TrustedBySection";
+import FeatureSection from "@/components/FeaturSection";
 
 export default function Home() {
   return (
-    <LocomotiveScrollProvider>
-      <div className="relative min-h-screen w-full">
-        <Navbar />
+    <>
+    <FeatureSection />
+    <TrustedBySection />
+    </>
+    // <LocomotiveScrollProvider>
+    //   <div className="relative min-h-screen w-full">
+    //     <Navbar />
         
-        {/* ✅ Each section must be wrapped in data-scroll-section */}
-        <div data-scroll-section>
-          <Hero />
-        </div>
+    //     {/* ✅ Each section must be wrapped in data-scroll-section */}
+    //     <div data-scroll-section>
+    //       <Hero />
+    //     </div>
 
-        <div data-scroll-section>
-          <Standards />
-        </div>
+    //     <div data-scroll-section>
+    //       <Standards />
+    //     </div>
 
-        <div data-scroll-section>
-          <Stacking />
-        </div>
+    //     {/* <div data-scroll-section>
+    //       <Stacking />
+    //     </div> */}
 
-        <div data-scroll-section>
-          <Core />
-        </div>
+    //     <div data-scroll-section>
+    //       <Core />
+    //     </div>
 
-        <div data-scroll-section>
-          <Blogs />
-        </div>
+    //     <div data-scroll-section>
+    //       <Blogs />
+    //     </div>
 
-        <div data-scroll-section>
-          <PreFooter />
-        </div>
+    //     <div data-scroll-section>
+    //       <PreFooter />
+    //     </div>
 
-        <div data-scroll-section>
-          <Footer />
-        </div>
-      </div>
-    </LocomotiveScrollProvider>
+    //     <div data-scroll-section>
+    //       <Footer />
+    //     </div>
+    //   </div>
+    // </LocomotiveScrollProvider>
+
+   
   );
 }

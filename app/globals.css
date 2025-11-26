@@ -41,6 +41,7 @@
   --color-card: var(--card);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-xl: calc(var(--radius) + 4px);
+  --animate-orbit: orbit calc(var(--duration)*1s) linear infinite;
 }
 
 :root {
@@ -76,6 +77,32 @@
   --sidebar-accent-foreground: #080c04;
   --sidebar-border: #d4d8c8;
   --sidebar-ring: #b0ea1d;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
+  }
+  100% {
+    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px)) rotate(calc((var(--angle) * -1deg) - 360deg));
+  }
+}
+
+@keyframes orbit-semi {
+  0% {
+    transform: translate(-50%, 0) rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * -1px)) rotate(calc(var(--angle) * -1deg));
+  }
+  100% {
+    transform: translate(-50%, 0) rotate(calc(var(--angle) * 1deg + 180deg)) translateY(calc(var(--radius) * -1px)) rotate(calc((var(--angle) * -1deg) - 180deg));
+  }
+}
+
+.animate-orbit {
+  animation: orbit calc(var(--duration) * 1s) linear infinite;
+}
+
+.animate-orbit-semi {
+  animation: orbit-semi calc(var(--duration) * 1s) linear infinite;
 }
 
 .dark {
@@ -126,7 +153,7 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -370,4 +397,13 @@ html.has-scroll-dragging {
   color: #dfdcff;
   font-size: clamp(2rem, 6rem, 5vw);
   max-width: 45ch;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
