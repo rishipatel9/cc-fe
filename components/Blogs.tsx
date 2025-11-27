@@ -31,9 +31,9 @@ const blogs = [
 const Blogs = () => {
   const [hoverHistory, setHoverHistory] = useState<number[]>([]);
 
-  const handleMouseEnter = (index) => {
-    setHoverHistory(prev => {
-      const filtered = prev.filter(i => i !== index);
+  const handleMouseEnter = (index: number): void => {
+    setHoverHistory((prev: number[]) => {
+      const filtered: number[] = prev.filter((i: number) => i !== index);
       return [...filtered, index];
     });
   };
@@ -69,38 +69,38 @@ const Blogs = () => {
   };
   
   return (
-    <div className='bg-accent w-full py-20'>
-      <div className="w-full border-t border-dashed border-gray-300 mb-8"></div>
+    <div className='bg-[#fcfdf6] w-full py-20'>
+      <div className="w-full border-t border-dashed border-[#6c5f31]/30 mb-8"></div>
 
       <div className="mx-auto max-w-7xl px-6">
-        <p className='text-gray-600 text-sm uppercase tracking-wider '>Related Articles & News</p>
-        <h2 className='text-6xl md:text-7xl font-semibold tracking-tight text-gray-900 mb-12'>
+        <p className='text-[#6c5f31]/70 text-sm uppercase tracking-wider'>Related Articles & News</p>
+        <h2 className='text-6xl md:text-7xl font-semibold tracking-tight text-[#080c04] mb-12'>
           Blogs
         </h2>
-        <div className='bg-gray-100 p-6'>
-          <div className='grid md:grid-cols-4 gap-0'>
+        <div className='bg-[#d1cebb]/30 p-6 rounded-2xl'>
+          <div className='grid md:grid-cols-4 gap-6'>
             {blogs.map((blog, index) => (
               <div 
                 key={index} 
                 className={`flex flex-col gap-4 ${index === 1 ? 'md:col-span-2' : 'col-span-1'} ${getZIndex(index)} relative hover:scale-105 transition-all duration-500 ease-out cursor-pointer`}
                 onMouseEnter={() => handleMouseEnter(index)}
               >
-                <div className="overflow-hidden">
+                <div className="overflow-hidden rounded-xl">
                   <img 
                     src={blog.image} 
                     alt={blog.title} 
-                    className={`w-full h-auto object-cover aspect-video transition-transform duration-500 ease-out ${getScale(index)}`}
+                    className={`w-full h-auto object-cover aspect-video transition-transform duration-500 ease-out ${getScale(index)} rounded-xl`}
                   />
                 </div>
-                <div className='flex flex-col gap-2 px-6'>
-                  <div className='text-xs text-gray-600 flex items-center gap-2'>
+                <div className='flex flex-col gap-2 px-4'>
+                  <div className='text-xs text-[#6c5f31]/80 flex items-center gap-2'>
                     <span>{blog.date}</span>
                     <span>•</span>
                     <span>{blog.category}</span>
                     <span>•</span>
                     <span>{blog.readTime}</span>
                   </div>
-                  <h3 className='text-lg font-medium text-gray-900 leading-tight'>{blog.title}</h3>
+                  <h3 className='text-lg font-medium text-[#080c04] leading-tight'>{blog.title}</h3>
                 </div>
               </div>
             ))}

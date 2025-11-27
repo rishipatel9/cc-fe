@@ -39,6 +39,9 @@ export default function LocomotiveScrollProvider({ children }: LocomotiveScrollP
         });
 
         const locoScroll = locoScrollRef.current;
+        
+        // Make Locomotive Scroll instance available globally
+        (window as any).locomotiveScroll = locoScroll;
 
         // ====================================
         // CRITICAL: ScrollTrigger Proxy Setup

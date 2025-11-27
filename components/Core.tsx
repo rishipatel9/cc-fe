@@ -36,44 +36,53 @@ const Core = () => {
     if (cards.length === 0) return
 
     const timer = setTimeout(() => {
-      // Initial state - cards start from below
+      // Check if locomotive scroll is active
+      const scrollContainer = document.querySelector("[data-scroll-container]")
+      const useLocomotiveScroll = scrollContainer !== null
+
+      // Initial state - all cards hidden below
       gsap.set(cards, {
         opacity: 0,
-        yPercent: 50,
+        yPercent: 100,
       })
 
       gsap.set(images, {
         scale: 1.4,
       })
 
-      // Animate each card individually with scroll
+      // Animate cards sequentially - each appears after the previous one
       cards.forEach((card, index) => {
+        // Calculate staggered start positions
+        const startOffset = index * 30 // Each card starts 30% later than previous
+        
         gsap.to(card, {
           opacity: 1,
           yPercent: 0,
-          ease: "power3.out",
+          ease: "power2.out",
           scrollTrigger: {
-            trigger: card,
-            scroller: "[data-scroll-container]",
-            start: "top 95%",
-            end: "top 30%",
-            scrub: 0.5, // Lower scrub = faster animation
+            trigger: sectionRef.current,
+            scroller: useLocomotiveScroll ? "[data-scroll-container]" : undefined,
+            start: `top ${80 - startOffset}%`, // Staggered start
+            end: `top ${20 - startOffset}%`,   // Staggered end
+            scrub: 1,
             toggleActions: "play none none reverse",
           },
         })
 
         // Image parallax zoom
-        gsap.to(images[index], {
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: card,
-            scroller: "[data-scroll-container]",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.8,
-          },
-        })
+        if (images[index]) {
+          gsap.to(images[index], {
+            scale: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              scroller: useLocomotiveScroll ? "[data-scroll-container]" : undefined,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1,
+            },
+          })
+        }
       })
 
       ScrollTrigger.refresh()
@@ -88,28 +97,27 @@ const Core = () => {
   return (
     <section 
       ref={sectionRef} 
-      className="relative pt-20 pb-20 bg-secondary border-r border-l border-dashed border-white/10 shadow" 
-      data-scroll
-      data-scroll-speed="3"
+      className="relative pt-20 pb-40 bg-[#fcfdf6] border-r border-l border-dashed border-[#6c5f31]/20 shadow" 
+      data-scroll-section
     >
-      <div className="w-full border-t border-dashed border-white/10 mb-8"></div>
+      <div className="w-full border-t border-dashed border-[#6c5f31]/20 mb-8"></div>
 
-      <div className="mx-auto max-w-7xl px-6">
-        <p className="text-white/40 text-sm uppercase tracking-wider text-right mb-4">Core Values</p>
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white text-right mb-16">
-          Delivering Results
-        </h2>
+      <div className="w-full px-0">
+        <div className="max-w-7xl mx-auto px-6 mb-16">
+          <p className="text-[#6c5f31]/60 text-sm uppercase tracking-wider text-right mb-4">Core Values</p>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-[#080c04] text-right">
+            Delivering Results
+          </h2>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
           {achievements.map((achievement, index) => (
             <div
               key={index}
               ref={(el) => {
                 cardsRef.current[index] = el
               }}
-              className="relative h-screen md:h-[600px] overflow-hidden group cursor-pointer"
-              data-scroll
-              data-scroll-speed="5"
+              className="relative h-[1000px] md:h-[900px] overflow-hidden group cursor-pointer"
             >
               {/* Image Container */}
               <div
@@ -121,7 +129,7 @@ const Core = () => {
                 <Image
                   src={achievement.image}
                   alt={achievement.title}
-                  fill
+                  fill  
                   className="object-cover"
                   priority={index === 0}
                   sizes="(max-width: 768px) 100vw, 33vw"
@@ -147,7 +155,7 @@ const Core = () => {
         </div>
       </div>
 
-      <div className="w-full border-t border-dashed border-white/10 mt-8"></div>
+      <div className="w-full border-t border-dashed border-[#6c5f31]/20 mt-8"></div>
     </section>
   )
 }

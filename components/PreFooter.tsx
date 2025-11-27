@@ -94,8 +94,8 @@ const PreFooter = () => {
       {/* ================= CENTER CONTENT ================= */}
       <div className="relative z-10 flex flex-col justify-center items-center flex-1 text-center px-4 sm:px-6 md:px-8 py-12 md:py-16">
 
-        <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-black leading-tight tracking-tight">
-          Get in contact with <br />
+      <h2 className='text-6xl md:text-7xl font-semibold tracking-tight text-[#080c04] mb-12'>
+          Get in Contact with <br />
           <span className="text-[#F0db18]">our team</span>
         </h2>
 
