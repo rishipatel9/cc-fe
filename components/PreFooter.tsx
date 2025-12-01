@@ -1,19 +1,23 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const DOT_COLORS = ["#ff3b30", "#34c759", "#ffcc00", "#af52de", "#0fb9b1"];
 
 const PreFooter = () => {
   const dotsRef = useRef<HTMLDivElement[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  let lastScroll = 0;
+
+  // ✅ Check if running on client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Check if device is mobile/tablet
   useEffect(() => {
+    if (!isClient) return;
+    
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
     };
@@ -21,89 +25,68 @@ const PreFooter = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  }, [isClient]);
 
-  // Smooth dot animation for desktop only using ScrollTrigger
+  // Dot animation for desktop only
   useEffect(() => {
-    if (isMobile || !containerRef.current) return;
+    if (!isClient || isMobile) return;
 
-    const dots = dotsRef.current.filter(Boolean) as HTMLDivElement[];
-    if (dots.length === 0) return;
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const direction = scrollY > lastScroll ? "down" : "up";
+      lastScroll = scrollY;
 
-    // Set initial state - dots slightly transparent
-    gsap.set(dots, {
-      opacity: 0.6,
-      scale: 0.8,
-    });
-
-    // Create animation for each dot with stagger
-    dots.forEach((dot, index) => {
-      const staggerDelay = index * 0.1;
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          scrub: 1, // Smooth scrubbing
-          toggleActions: "play none none reverse",
-        },
+      dotsRef.current.forEach((dot) => {
+        if (!dot) return;
+        
+        const randomX = (Math.random() - 0.5) * 100;
+        const randomY = (Math.random() - 0.5) * 100;
+        
+        dot.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        dot.style.transition = "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
       });
 
-      // Animate dot properties smoothly
-      tl.to(dot, {
-        x: () => (index % 2 === 0 ? -25 : 25), // Alternate directions
-        y: () => (index % 3 === 0 ? -20 : 15), // Different Y movements
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-        delay: staggerDelay,
-      });
-
-      // Add subtle rotation for some dots
-      if (index % 4 === 0) {
-        tl.to(dot, {
-          rotation: 360,
-          duration: 2,
-          ease: "power2.inOut",
-        }, "-=1");
-      }
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      setTimeout(() => {
+        dotsRef.current.forEach((dot) => {
+          if (!dot) return;
+          dot.style.transform = "translate(0, 0)";
+        });
+      }, 600);
     };
-  }, [isMobile]);
 
-  const totalDots = 8;
-  const curveHeight = 350;
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isClient, isMobile]);
 
-  // Create a proper upward curve (parabolic curve)
-  const getCurvePosition = (index: number, total: number) => {
-    const t = index / (total - 1);
-    // Parabolic curve: y = a(x - h)² + k
-    // We want an upward opening parabola
-    const x = t; // 0 to 1
-    const y = 4 * (x - 0.5) ** 2; // Creates upward curve with vertex at center
-    
-    const xPercent = t * 100;
-    const yPosition = curveHeight * y;
-    
-    return { xPercent, yPosition };
-  };
+  // Don't render dots until client-side
+  if (!isClient) {
+    return (
+      <div className="relative z-10 flex flex-col justify-center items-center flex-1 text-center px-4 sm:px-6 md:px-8 py-12 md:py-16">
+        <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-6">
+          Ready to offset your carbon?
+        </h2>
+        <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-6 sm:mb-8 max-w-2xl">
+          Join thousands making a real impact on climate change
+        </p>
+        <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300">
+          Get Started →
+        </button>
+      </div>
+    );
+  }
+
+  const totalDots = 30;
+  const curveHeight = 150;
 
   return (
-    <div 
-      ref={containerRef}
-      className="relative w-full min-h-screen flex flex-col overflow-hidden bg-[#fcfdf6]"
-    >
-
-      {/* ================= UPWARD ARC DOTS (Desktop Only) ================= */}
+    <div className="relative w-full bg-white overflow-hidden" style={{ minHeight: "80vh" }}>
+      {/* Animated dots */}
       {!isMobile && (
-        <div className="absolute top-[12%] w-full left-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none">
           {Array.from({ length: totalDots }).map((_, i) => {
-            const { xPercent, yPosition } = getCurvePosition(i, totalDots);
+            const t = i / (totalDots - 1);
+            const xPercent = t * 100;
+            const y = curveHeight * Math.pow(2 * t - 1, 2);
 
             return (
               <div
@@ -114,7 +97,7 @@ const PreFooter = () => {
                 style={{
                   position: "absolute",
                   left: `${xPercent}%`,
-                  top: `${yPosition}px`,
+                  top: `${y}px`,
                   width: "12px",
                   height: "12px",
                   borderRadius: "50%",
@@ -128,35 +111,18 @@ const PreFooter = () => {
         </div>
       )}
 
-      {/* ================= CENTER CONTENT ================= */}
+      {/* Content */}
       <div className="relative z-10 flex flex-col justify-center items-center flex-1 text-center px-4 sm:px-6 md:px-8 py-12 md:py-16">
-
-        <h2 className='text-6xl md:text-7xl font-semibold tracking-tight text-[#080c04] mb-12'>
-          Get in Contact with <br />
-          <span className="text-[#F0db18]">our team</span>
+        <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-6">
+          Ready to offset your carbon?
         </h2>
-
-        <a
-          href="/demo"
-          className="
-            bg-[#b0ea1d] text-[#080c04] 
-            mt-8 sm:mt-12 md:mt-16 lg:mt-20
-            px-6 py-3 text-base
-            sm:px-7 sm:py-4 sm:text-lg
-            md:px-8 md:py-5 md:text-xl
-            lg:px-6 lg:py-2 lg:text-2xl
-            rounded-3xl
-            font-semibold
-            hover:bg-[#6c5f31] hover:text-[#d1cebb] 
-            transition-colors duration-300
-            inline-block
-          "
-        >
-          Contact CarbonCut
-        </a>
+        <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-6 sm:mb-8 max-w-2xl">
+          Join thousands making a real impact on climate change
+        </p>
+        <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300">
+          Get Started →
+        </button>
       </div>
-
-      <div className="w-full" style={{ borderTop: "1px solid #d1cebb" }}></div>
     </div>
   );
 };

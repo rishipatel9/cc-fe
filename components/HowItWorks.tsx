@@ -249,10 +249,18 @@ const stepComponents = [SkeletonOne, SkeletonTwo, SkeletonThree, SkeletonFour];
 export default function HowItWorks() {
     const [activeStep, setActiveStep] = useState(0);
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [isClient, setIsClient] = useState(false); // ✅ Add this
     const sectionRef = useRef<HTMLElement>(null);
     const fieldsRef = useRef<HTMLDivElement>(null);
 
+    // ✅ Check if client-side
     useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isClient) return; // ✅ Guard clause
+
         const handleScroll = () => {
             if (!sectionRef.current) return;
 
@@ -261,21 +269,17 @@ export default function HowItWorks() {
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
 
-            // Calculate scroll progress through the section (0 to 1)
             const progress = Math.max(0, Math.min(1,
                 (scrollY - sectionTop + windowHeight * 0.5) / sectionHeight
             ));
             setScrollProgress(progress);
 
-            // Slower step progression - requires more scrolling between steps
-            // Each step now requires ~8-10 scroll actions to progress
-            const stepProgress = progress * 4; // 0 to 4
-            const stepIndex = Math.min(Math.floor(stepProgress), 3); // 0, 1, 2, or 3
+            const stepProgress = progress * 4;
+            const stepIndex = Math.min(Math.floor(stepProgress), 3);
 
             setActiveStep(stepIndex);
         };
 
-        // Throttle scroll events for smoother experience
         let ticking = false;
         const scrollHandler = () => {
             if (!ticking) {
@@ -291,7 +295,20 @@ export default function HowItWorks() {
         handleScroll();
 
         return () => window.removeEventListener("scroll", scrollHandler);
-    }, []);
+    }, [isClient]); // ✅ Add isClient dependency
+
+    // ✅ Return loading state during SSR
+    if (!isClient) {
+        return (
+            <section className="relative z-10 overflow-clip bg-[#fcfdf6]" id="what-we-do">
+                <div className="container mx-auto px-4 py-20">
+                    <h2 className="text-4xl md:text-6xl font-bold text-center mb-12">
+                        How It Works
+                    </h2>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section

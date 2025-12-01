@@ -10,7 +10,6 @@ gsap.registerPlugin(ScrollTrigger);
 const Standards = () => {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
 
   const standards = [
     {
@@ -51,114 +50,38 @@ const Standards = () => {
     const cards = cardsRef.current.filter(Boolean);
     if (cards.length === 0) return;
 
-    // ====================================
-    // WHY THIS DELAY?
-    // ====================================
-    // We need to wait for:
-    // 1. Locomotive Scroll to initialize
-    // 2. ScrollTrigger proxy to be set up
-    // 3. Initial layout calculations to complete
-    const timer = setTimeout(() => {
-      // ====================================
-      // INITIAL STATE (CRITICAL)
-      // ====================================
-      // Set starting positions BEFORE creating ScrollTriggers
-      // This prevents the "black screen" or "already animated" issues
-      // gsap.set(cards, {
-      //   opacity: 0,
-      //   y: 100,
-      //   scale: 0.9,
-      // });
+    // Set initial state
+    gsap.set(cards, {
+      opacity: 0,
+      y: 100,
+      scale: 0.9,
+    });
 
-      // ====================================
-      // CREATE SCROLL ANIMATIONS
-      // ====================================
-      cards.forEach((card, index) => {
-        const animation = gsap.to(card, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            // ====================================
-            // CRITICAL: Use Locomotive's scroller
-            // ====================================
-            scroller: "[data-scroll-container]",
-            trigger: card,
-            
-            // ====================================
-            // START/END POSITIONS EXPLAINED
-            // ====================================
-            // Format: "trigger_position viewport_position"
-            // start: "top 85%" means:
-            //   - When card's TOP edge
-            //   - Reaches 85% down the viewport
-            //   - Start the animation
-            start: "top 85%",
-            
-            // end: "top 50%" means:
-            //   - When card's TOP edge
-            //   - Reaches 50% down the viewport
-            //   - Complete the animation
-            end: "top 50%",
-            
-            // ====================================
-            // SCRUB vs TOGGLE
-            // ====================================
-            // scrub: true → Animation follows scroll position (smooth but slower)
-            // toggleActions → Animation triggers once
-            toggleActions: "play none none reverse",
-            // Format: "onEnter onLeave onEnterBack onLeaveBack"
-            // "play none none reverse" means:
-            //   - Play when entering viewport
-            //   - Do nothing when leaving
-            //   - Do nothing when scrolling back into view
-            //   - Reverse when scrolling back up past start
-            
-            // ====================================
-            // DEBUGGING (Enable when needed)
-            // ====================================
-            // markers: true,
-            // id: `standard-card-${index}`,
-            markers: false,
-          },
-        });
-
-        // Store reference for cleanup
-        if (animation.scrollTrigger) {
-          scrollTriggersRef.current.push(animation.scrollTrigger);
-        }
+    // Create scroll animations - NO scroller prop needed
+    const animations = cards.map((card, index) => {
+      return gsap.to(card, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          end: "top 50%",
+          toggleActions: "play none none reverse",
+        },
       });
+    });
 
-      // ====================================
-      // FORCE REFRESH
-      // ====================================
-      // After creating all ScrollTriggers, recalculate positions
-      ScrollTrigger.refresh();
-    }, 1000); // Increased delay to ensure Locomotive is ready
-
-    // ====================================
-    // CLEANUP (ESSENTIAL)
-    // ====================================
     return () => {
-      clearTimeout(timer);
-      
-      // Kill only this component's ScrollTriggers
-      scrollTriggersRef.current.forEach(trigger => trigger.kill());
-      scrollTriggersRef.current = [];
-      
-      // Reset to initial state
+      animations.forEach(anim => anim.scrollTrigger?.kill());
       gsap.set(cards, { clearProps: "all" });
     };
-  }, []); // Empty dependency array = run once on mount
+  }, []);
 
   return (
-    <div 
-      // ref={sectionRef} 
-      className="relative pt-14  bg-background border-r border-l border-dashed border-opacity-10"
-      // data-scroll-section
-    >
+    <div ref={sectionRef} className="relative pt-14 bg-background border-r border-l border-dashed border-opacity-10">
       <div className="w-full border-t border-dashed border-text/10 mb-8"></div>
 
       <div className="mx-auto max-w-7xl px-6">
@@ -167,7 +90,7 @@ const Standards = () => {
           Carbon Standards
         </h2>
         
-        <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory scroll-smooth ">
+        <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory scroll-smooth">
           {standards.map((standard, index) => (
             <div
               key={standard.name}

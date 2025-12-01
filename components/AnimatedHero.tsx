@@ -1,14 +1,20 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const words = ["Reduce", "Measure", "Offset"];
 
 const ActionWordCarousel = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isClient, setIsClient] = useState(false); 
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    setIsClient(true); 
+  }, []);
+
+  useEffect(() => {
+
+    if (!containerRef.current || !isClient) return;
 
     const ctx = gsap.context(() => {
       const spans = gsap.utils.toArray<HTMLSpanElement>("[data-word]");
@@ -39,7 +45,7 @@ const ActionWordCarousel = () => {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isClient]);
 
   return (
     <div
