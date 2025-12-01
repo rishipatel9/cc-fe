@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import Image from 'next/image';
+import React, { useState, useRef, useEffect } from 'react';
 import { SmoothCursor } from "@/components/ui/smooth-cursor"
+
 
 interface CardProps {
     color: string;
@@ -64,12 +64,11 @@ const Card = ({ color, image, index, totalCards, activeIndex, dragOffset }: Card
                     background: color,
                 }}
             >
-                <Image
+                <img
                     src={image}
                     alt="Card Image"
-                    fill
-                    className="object-cover"
-                    draggable={false}
+                    className="w-full h-full object-cover"
+                    draggable="false"
                 />
             </div>
         </div>
@@ -96,15 +95,15 @@ export default function FeatureSection() {
         dragStartX.current = e.clientX;
     };
 
-    const handleMouseMove = useCallback((e: MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
         if (!isDragging) return;
         const diff = e.clientX - dragStartX.current;
         requestAnimationFrame(() => {
             setDragOffset(diff);
         });
-    }, [isDragging]);
+    };
 
-    const handleMouseUp = useCallback(() => {
+    const handleMouseUp = () => {
         if (!isDragging) return;
 
         const threshold = 50;
@@ -117,7 +116,7 @@ export default function FeatureSection() {
 
         setIsDragging(false);
         setDragOffset(0);
-    }, [isDragging, dragOffset, cards.length]);
+    };
 
     const handleTouchStart = (e: React.TouchEvent) => {
         setIsDragging(true);
@@ -159,7 +158,7 @@ export default function FeatureSection() {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [isDragging, dragOffset, handleMouseMove, handleMouseUp]);
+    }, [isDragging, dragOffset]);
 
     return (
         <>
