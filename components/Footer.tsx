@@ -1,9 +1,8 @@
 "use client"
 import React from "react";
+import Image from "next/image";
 import { Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
-import ThreeScene from "./ThreeScene";
-import Noir7TextAnimation from "./animations/TextAnim";
-import { Link000, Link004 } from "./ui/skiper-ui/skiper40";
+import {  Link004 } from "./ui/skiper-ui/skiper40";
 
 const Footer = () => {
   return (
@@ -69,15 +68,17 @@ const Footer = () => {
 
         {/* ================= LINE ================= */}
         {/* <div className="w-full border-t border-white/20"></div> */}
-
         {/* ================= BOTTOM IMAGE ================= */}
         <div className="flex-1 flex items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-8 md:py-12">
-          <img
+          <Image
             src="/cc-croped.svg"
             alt="CarbonCut Logo"
+            width={1200}
+            height={400}
             className="w-full h-auto object-contain max-w-full inverted-colors:invert"
             style={{ maxHeight: "400px", filter: "brightness(0) invert(1)" }}
           />
+          {/* <Noir7TextAnimation 
           {/* <Noir7TextAnimation 
   text="STUDIO"
   fontSize="clamp(4rem, 10vw, 10rem)"

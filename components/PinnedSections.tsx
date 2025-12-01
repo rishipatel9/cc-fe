@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useRef } from "react"
+import Image from "next/image"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
 
@@ -61,16 +62,19 @@ export default function LocomotivePinnedSections() {
   }, []);
 
   return (
-    <div className="pinned-section-container">
+    <>
       <header>
         <a href="https://greensock.com/scrolltrigger">
-          <img
+          <Image
             src="https://greensock.com/wp-content/uploads/2020/10/ScrollTrigger-logo.svg"
             alt="ScrollTrigger logo"
+            width={200}
+            height={40}
             className="h-10 mx-auto"
           />
         </a>
       </header>
+  
       <div ref={containerRef} className="w-full">
         {sections.map((section, index) => (
           <section
@@ -90,6 +94,6 @@ export default function LocomotivePinnedSections() {
           </section>
         ))}
       </div>
-    </div>
+    </>
   )
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Calculator, BarChart3, Download, Award } from "lucide-react";
+import { Calculator, BarChart3, Download, Award, PlugZap, GitPullRequestDraft, CalendarSync, ShieldCheck, LucideProps } from "lucide-react";
 
 interface Step {
     step: number;
@@ -12,6 +12,7 @@ interface Step {
     description: string;
     metrics: { label: string };
     image?: string;
+    icon: React.ComponentType<LucideProps>;
 }
 
 const steps: Step[] = [
@@ -21,7 +22,8 @@ const steps: Step[] = [
         subtitle: "Integrate once — measure forever",
         description: "Connect your ad platforms, data streams, or infrastructure once. CarbonLive immediately begins real-time CO₂e tracking across servers, delivery networks, and data transfers — using live grid-intensity data and verified emission factors.",
         metrics: { label: "Instant integration, instant visibility" },
-        image: "/how-it-works/connect.jpg"
+        image: "/how-it-works/connect.jpg",
+        icon: PlugZap
     },
     {
         step: 2,
@@ -29,7 +31,8 @@ const steps: Step[] = [
         subtitle: "Real-time insights you can act on",
         description: "View live CO₂e totals, forecasted footprints, and AI-agent recommendations for immediate emission reduction — all mapped to GHG Protocol categories.",
         metrics: { label: "Live dashboards. Instant accountability." },
-        image: "/how-it-works/monitor.jpg"
+        image: "/how-it-works/monitor.jpg",
+        icon: GitPullRequestDraft
     },
     {
         step: 3,
@@ -37,7 +40,8 @@ const steps: Step[] = [
         subtitle: "Residuals retired automatically",
         description: "When emissions hit a defined threshold or a campaign ends, CarbonLive automatically retires verified carbon credits from approved registries such as Verra, Gold Standard, ACR.",
         metrics: { label: "Verified offsets, executed automatically." },
-        image: "/how-it-works/offset.jpg"
+        image: "/how-it-works/offset.jpg",
+        icon: CalendarSync
     },
     {
         step: 4,
@@ -45,7 +49,8 @@ const steps: Step[] = [
         subtitle: "Proof you can publish",
         description: "Every offset completed through CarbonLive generates a measure-linked certificate and on-chain reference hash, providing finance teams, auditors, and clients with verifiable proof of real-time emission control and neutrality.",
         metrics: { label: "Transparent data. Trusted results." },
-        image: "/how-it-works/certify.jpg"
+        image: "/how-it-works/certify.jpg",
+        icon: ShieldCheck
     },
 
 ];
@@ -61,11 +66,15 @@ const SkeletonOne = () => {
                             <span className="font-semibold text-[#080c04] text-sm">XYZ Campaign (01.08.2025)</span>
                         </div>
                         <div className="space-y-3">
-                            {[
-                                { channel: "DSP Connected:", emissions: "Google DV360", width: "w-12" },
-                                { channel: "Impressions:", emissions: "60,000,000", width: "w-10" },
-                                { channel: "Active UTM:", emissions: "480", width: "w-16" },
-                            ].map((item, idx) => (
+                            {[{
+                                channel: "DSP Connected:", emissions: "Google DV360", width: "w-12"
+                            },
+                            {
+                                channel: "Impressions:", emissions: "60,000,000", width: "w-10"
+                            },
+                            {
+                                channel: "Active UTM:", emissions: "480", width: "w-16"
+                            }].map((item, idx) => (
                                 <motion.div
                                     key={item.channel}
                                     className="flex items-center gap-3"
@@ -292,129 +301,228 @@ export default function HowItWorks() {
             aria-label="What We Do"
             style={{ "--progress": scrollProgress } as React.CSSProperties}
         >
-            {/* Parallax Wrapper - Increased height for slower progression */}
-            <div className="prllx-wrapper relative flex h-[800lvh] flex-col overflow-clip md:h-[1600lvh] md:flex-row ">
+            {/* Mobile Layout - Simple Vertical */}
+            <div className="block lg:hidden">
+                {/* Mobile Header */}
+                <div className="px-4 py-8">
+                    <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-[#60be03] text-center mb-2">
+                        How it works
+                    </h2>
+                    <p className="text-sm sm:text-base text-[#6c5f31] text-center">
+                        CarbonLive measures, reduces, and offsets emissions in real time
+                    </p>
+                </div>
 
-                {/* Left Side - Sticky Fields */}
-                <div className="fields-sticky sticky top-0 z-10 h-lvh w-full md:w-1/2 flex items-center justify-center">
-                    {/* Dashed Grid Background with Parallax Movement */}
-                    <div
-                        className="absolute top-0 -z-10 left-20 h-full mb-40 w-4 text-[#fdcf29]"
-                        style={{
-                            opacity: 0.5,
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M 0 0 L 10 0 M 0 0 L 0 10' stroke='currentColor' stroke-dasharray='2 2' stroke-width='1' vector-effect='non-scaling-stroke'%3E%3C/path%3E%3C/svg%3E")`,
-                            backgroundSize: "1em 1em",
-                            backgroundPosition: `center calc(50% - ${scrollProgress * 2000}px)`
-                        }}
-                    />
-
-                    {/* Fields Container */}
-                    <div
-                        ref={fieldsRef}
-                        className="relative w-full max-w-2xl px-6"
-                    >
-                        <ul className="fields-wrapper relative flex w-full">
-                            {steps.map((step, index) => {
-                                const isActive = activeStep === index;
-                                const rotationDegrees = isActive ? 720 : (index < activeStep ? 720 : 0);
-
-                                return (
-                                    <li
-                                        key={index}
-                                        className="absolute inset-0 flex flex-col justify-center w-full transition-opacity duration-700"
-                                        style={{
-                                            opacity: isActive ? 1 : 0,
-                                            pointerEvents: isActive ? 'auto' : 'none'
-                                        }}
-                                    >
-                                        <div className="flex items-start gap-6">
-                                            {/* Step Number */}
-                                            <div className="shrink-0 font-medium font-mono text-sm text-[#6c5f31]">
-                                                <div>0{step.step}</div>
-                                            </div>
-
-                                            {/* Step Content */}
-                                            <div className="flex-1 flex flex-col items-start gap-4 md:gap-6">
-                                                {/* Icon with Rotating Outline */}
-                                                <div className="relative h-10 w-10">
-                                                    {/* Icons commented out */}
-                                                </div>
-
-                                                {/* Title with Double Layer Reveal */}
-                                                <h2 className="-mb-2.5 overflow-clip font-medium text-2xl md:text-4xl text-[#080c04]">
-                                                    <div
-                                                        className="title-wrapper relative flex flex-col transition-transform duration-700"
-                                                        style={{
-                                                            transform: isActive ? "translateY(-100%)" : "translateY(0)"
-                                                        }}
-                                                    >
-                                                        <span className="absolute top-full left-0 pb-2.5">{step.title}</span>
-                                                        <span className="pb-2.5">{step.title}</span>
-                                                    </div>
-                                                </h2>
-
-                                                {/* Subtitle */}
-                                                <p className="text-base md:text-lg font-semibold text-[#6c5f31]">
-                                                    {step.subtitle}
-                                                </p>
-
-                                                {/* Description */}
-                                                <p className="text-sm text-[#6c5f31]/80 leading-[1.4]">
-                                                    {step.description}
-                                                </p>
-
-                                                {/* Metrics Badge */}
-                                                <div className="inline-block bg-[#b0ea1d]/10 border border-[#b0ea1d]/30 rounded-full px-5 py-2.5">
-                                                    <span className="text-xs md:text-sm font-semibold text-[#6c5f31]">
-                                                        {step.metrics.label}
-                                                    </span>
+                {/* Mobile Steps */}
+                <div className="space-y-8 px-4 pb-12">
+                    {steps.map((step, index) => {
+                        const IconComponent = step.icon;
+                        return (
+                            <div key={index} className="space-y-4">
+                                {/* Step Content */}
+                                <div className="bg-white rounded-lg border border-[#d1cebb]/40 p-4">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="shrink-0 font-bold font-mono text-lg text-[#6c5f31]">
+                                            0{step.step}
+                                        </div>
+                                        
+                                        {/* Icon Component - Mobile */}
+                                        <div className="relative h-8 w-8">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="currentColor"
+                                                viewBox="0 0 40 40"
+                                                className="icons-outline absolute inset-0 text-[#6c5f31] transition-transform duration-1000"
+                                            >
+                                                <path d="M1 32.653V39h6.347v1H0v-7.347zm39 0V40h-7.347v-1H39v-6.347zM7.347 0v1H1v6.347H0V0zM40 0v7.347h-1V1h-6.347V0z" />
+                                            </svg>
+                                            
+                                            {/* Sliding Icon */}
+                                            <div 
+                                                className="absolute inset-0 inline-flex overflow-hidden transition-transform duration-500"
+                                                style={{
+                                                    transform: "translateX(0)",
+                                                    opacity: 1
+                                                }}
+                                            >
+                                                <div className="w-8 h-8 bg-[#b0ea1d] rounded-full flex items-center justify-center shrink-0">
+                                                    <IconComponent className="w-4 h-4 text-white" />
                                                 </div>
                                             </div>
                                         </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
-                </div>
+                                        
+                                        <div>
+                                            <h3 className="text-lg font-bold text-[#080c04]">
+                                                {step.title}
+                                            </h3>
+                                            <p className="text-sm text-[#6c5f31] font-medium">
+                                                {step.subtitle}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <p className="text-sm text-[#6c5f31]/80 leading-relaxed mb-3">
+                                        {step.description}
+                                    </p>
+                                    
+                                    <div className="inline-block bg-[#b0ea1d]/10 border border-[#b0ea1d]/30 rounded-full px-3 py-1">
+                                        <span className="text-xs font-semibold text-[#6c5f31]">
+                                            {step.metrics.label}
+                                        </span>
+                                    </div>
+                                </div>
 
-                {/* Right Side - Sticky Animation/Image Panel */}
-                <div className="absolute top-0 right-0 z-0 h-full w-full md:w-1/2">
-
-                    <div className="w-full flex justify-end px-4 md:px-10">
-                        <div className="max-w-2xl text-end">
-                            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-[#d1cebb] leading-tight">
-                                How it works
-                            </h2>
-
-                            <p className="mt-4 text-base md:text-lg text-[#080c04]/80 leading-relaxed">
-                                CarbonLive measures, reduces, and offsets emissions in real time — starting with
-                                internet advertising and expanding to energy and gas sectors.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="anim-wrapper sticky top-0 left-0 h-lvh w-full">
-                        <div
-                            className="anim-bg-wrapper absolute inset-0"
-                        >
-                            {steps.slice(0, 4).map((step, index) => (
-                                <div
-                                    key={index}
-                                    className="anim-bg-img absolute inset-0 transition-opacity duration-700"
-                                    style={{
-                                        opacity: activeStep === index ? 1 : 0,
-                                        visibility: activeStep === index ? "visible" : "hidden"
-                                    }}
-                                >
-                                    {/* Render step components */}
+                                {/* Skeleton Component */}
+                                <div className="h-64">
                                     {stepComponents[index] && stepComponents[index]()}
                                 </div>
-                            ))}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Desktop Layout - Original Parallax */}
+            <div className="hidden lg:block">
+                <div className="prllx-wrapper relative flex h-[1600lvh] flex-row overflow-clip">
+                    {/* Left Side - Sticky Fields */}
+                    <div className="fields-sticky sticky top-0 z-10 h-lvh w-1/2 flex items-center justify-center">
+                        {/* Dashed Grid Background with Parallax Movement */}
+                        <div
+                            className="absolute top-0 -z-10 left-20 h-full mb-40 w-4 text-[#fdcf29]"
+                            style={{
+                                opacity: 0.5,
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M 0 0 L 10 0 M 0 0 L 0 10' stroke='currentColor' stroke-dasharray='2 2' stroke-width='1' vector-effect='non-scaling-stroke'%3E%3C/path%3E%3C/svg%3E")`,
+                                backgroundSize: "1em 1em",
+                                backgroundPosition: `center calc(50% - ${scrollProgress * 2000}px)`
+                            }}
+                        />
+
+                        {/* Fields Container */}
+                        <div
+                            ref={fieldsRef}
+                            className="relative w-full max-w-2xl px-6"
+                        >
+                            <ul className="fields-wrapper relative flex w-full">
+                                {steps.map((step, index) => {
+                                    const isActive = activeStep === index;
+                                    const IconComponent = step.icon;
+                                    const rotationDegrees = isActive ? 720 : (index < activeStep ? 720 : 0);
+
+                                    return (
+                                        <li
+                                            key={index}
+                                            className="absolute inset-0 flex flex-col justify-center w-full transition-opacity duration-700"
+                                            style={{
+                                                opacity: isActive ? 1 : 0,
+                                                pointerEvents: isActive ? 'auto' : 'none'
+                                            }}
+                                        >
+                                            <div className="flex items-start gap-6">
+                                                {/* Step Number */}
+                                                <div className="shrink-0 font-medium font-mono text-sm text-[#6c5f31] -ml-2">
+                                                    <div>0{step.step}</div>
+                                                </div>
+
+                                                {/* Step Content */}
+                                                <div className="flex-1 flex flex-col items-start gap-4">
+                                                    {/* Icon Component - Desktop */}
+                                                    <div className="relative h-10 w-10">
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="currentColor"
+                                                            viewBox="0 0 40 40"
+                                                            className="icons-outline absolute inset-0 text-[#6c5f31] transition-transform duration-1000"
+                                                            style={{ transform: `rotate(${rotationDegrees}deg)` }}
+                                                        >
+                                                            <path d="M1 32.653V39h6.347v1H0v-7.347zm39 0V40h-7.347v-1H39v-6.347zM7.347 0v1H1v6.347H0V0zM40 0v7.347h-1V1h-6.347V0z" />
+                                                        </svg>
+                                                        
+                                                        {/* Sliding Icon */}
+                                                        <div 
+                                                            className="absolute inset-0 inline-flex overflow-hidden transition-transform duration-500"
+                                                            style={{
+                                                                transform: isActive ? "translateX(0)" : "translateX(-100%)",
+                                                                opacity: isActive ? 1 : 0
+                                                            }}
+                                                        >
+                                                            <div className="w-10 h-10 bg-[#b0ea1d] rounded-full flex items-center justify-center shrink-0">
+                                                                <IconComponent className="w-5 h-5 text-white" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Title with Double Layer Reveal */}
+                                                    <h2 className="overflow-clip font-medium text-4xl text-[#080c04] mb-1">
+                                                        <div
+                                                            className="title-wrapper relative flex flex-col transition-transform duration-700"
+                                                            style={{
+                                                                transform: isActive ? "translateY(-100%)" : "translateY(0)"
+                                                            }}
+                                                        >
+                                                            <span className="absolute top-full left-0">{step.title}</span>
+                                                            <span>{step.title}</span>
+                                                        </div>
+                                                    </h2>
+
+                                                    {/* Subtitle */}
+                                                    <p className="text-lg font-semibold text-[#6c5f31] mb-2">
+                                                        {step.subtitle}
+                                                    </p>
+
+                                                    {/* Description */}
+                                                    <p className="text-base text-[#6c5f31]/80 leading-relaxed mb-4">
+                                                        {step.description}
+                                                    </p>
+
+                                                    {/* Metrics Badge */}
+                                                    <div className="inline-block bg-[#b0ea1d]/10 border border-[#b0ea1d]/30 rounded-full px-4 py-2">
+                                                        <span className="text-sm font-semibold text-[#6c5f31]">
+                                                            {step.metrics.label}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Right Side - Sticky Animation/Image Panel */}
+                    <div className="absolute top-0 right-0 z-0 h-full w-1/2">
+                        <div className="w-full flex justify-end px-10 py-12">
+                            <div className="max-w-2xl text-end">
+                                <h2 className="text-6xl font-bold tracking-tight text-[#d1cebb] leading-tight mb-4">
+                                    How it works
+                                </h2>
+
+                                <p className="text-lg text-[#080c04]/80 leading-relaxed">
+                                    CarbonLive measures, reduces, and offsets emissions in real time — starting with
+                                    internet advertising and expanding to energy and gas sectors.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="anim-wrapper sticky top-0 left-0 h-lvh w-full">
+                            <div className="anim-bg-wrapper absolute inset-0">
+                                {steps.slice(0, 4).map((step, index) => (
+                                    <div
+                                        key={index}
+                                        className="anim-bg-img absolute inset-0 transition-opacity duration-700"
+                                        style={{
+                                            opacity: activeStep === index ? 1 : 0,
+                                            visibility: activeStep === index ? "visible" : "hidden"
+                                        }}
+                                    >
+                                        {stepComponents[index] && stepComponents[index]()}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
     );

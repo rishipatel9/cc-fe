@@ -105,19 +105,19 @@ const Core = () => {
       <div className="w-full px-0">
         <div className="max-w-7xl mx-auto px-6 mb-16">
           <p className="text-[#6c5f31]/60 text-sm uppercase tracking-wider text-right mb-4">Core Values</p>
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-[#080c04] text-right">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-[#080c04] text-right">
             Delivering Results
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-0">
           {achievements.map((achievement, index) => (
             <div
               key={index}
               ref={(el) => {
                 cardsRef.current[index] = el
               }}
-              className="relative h-[1000px] md:h-[900px] overflow-hidden group cursor-pointer"
+              className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[800px] overflow-hidden group cursor-pointer"
             >
               {/* Image Container */}
               <div
@@ -132,21 +132,21 @@ const Core = () => {
                   fill  
                   className="object-cover"
                   priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  sizes="(max-width: 1024px) 100vw, 33vw"
                 />
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
               </div>
 
               {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-end p-8 text-white">
+              <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 text-white">
                 {/* Description - Shows on hover */}
                 <p className="text-sm md:text-base text-white/90 mb-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 ease-out">
                   {achievement.description}
                 </p>
 
                 {/* Title - Always visible */}
-                <h3 className="text-3xl md:text-4xl font-bold transform group-hover:translate-y-0 transition-all duration-500 ease-out">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold transform group-hover:translate-y-0 transition-all duration-500 ease-out">
                   {achievement.title}
                 </h3>
               </div>

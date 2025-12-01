@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
-import { SmoothCursor } from "@/components/ui/smooth-cursor"
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { SmoothCursor } from "@/components/ui/smooth-cursor"
 
 interface CardProps {
     color: string;
@@ -16,9 +16,9 @@ const Card = ({ color, image, index, totalCards, activeIndex, dragOffset }: Card
 
     const getPositionStyle = () => {
         const positions = [
-            { x: -55, y: 15, rotate: -15, scale: 0.7, z: 15, opacity: 0.5 },  // Left card - above dashed line
-            { x: 0, y: 0, rotate: 0, scale: 1, z: 20, opacity: 1 },           // Center card - above dashed line
-            { x: 55, y: 15, rotate: 15, scale: 0.7, z: 15, opacity: 0.5 }     // Right card - above dashed line
+            { x: -55, y: 15, rotate: -15, scale: 0.7, z: 15, opacity: 0.5 },  // Left card
+            { x: 0, y: 0, rotate: 0, scale: 1, z: 20, opacity: 1 },           // Center card
+            { x: 55, y: 15, rotate: 15, scale: 0.7, z: 15, opacity: 0.5 }     // Right card
         ];
 
         let relativeIndex = (index - activeIndex + totalCards) % totalCards;
@@ -57,16 +57,19 @@ const Card = ({ color, image, index, totalCards, activeIndex, dragOffset }: Card
             }}
         >
             <div
-                className="w-full h-full max-w-md max-h-[550px] rounded-3xl overflow-hidden select-none"
+                className="w-full h-full max-w-[280px] sm:max-w-[320px] md:max-w-[380px] lg:max-w-[420px] xl:max-w-[450px] 
+                           max-h-80 sm:max-h-[360px] md:max-h-[400px] lg:max-h-[440px] xl:max-h-[480px] 
+                           rounded-2xl md:rounded-3xl overflow-hidden select-none shadow-lg"
                 style={{
                     background: color,
                 }}
             >
-                <img
+                <Image
                     src={image}
                     alt="Card Image"
-                    className="w-full h-full object-cover"
-                    draggable="false"
+                    fill
+                    className="object-cover"
+                    draggable={false}
                 />
             </div>
         </div>
@@ -93,15 +96,15 @@ export default function FeatureSection() {
         dragStartX.current = e.clientX;
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = useCallback((e: MouseEvent) => {
         if (!isDragging) return;
         const diff = e.clientX - dragStartX.current;
         requestAnimationFrame(() => {
             setDragOffset(diff);
         });
-    };
+    }, [isDragging]);
 
-    const handleMouseUp = () => {
+    const handleMouseUp = useCallback(() => {
         if (!isDragging) return;
 
         const threshold = 50;
@@ -114,7 +117,7 @@ export default function FeatureSection() {
 
         setIsDragging(false);
         setDragOffset(0);
-    };
+    }, [isDragging, dragOffset, cards.length]);
 
     const handleTouchStart = (e: React.TouchEvent) => {
         setIsDragging(true);
@@ -156,7 +159,7 @@ export default function FeatureSection() {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [isDragging, dragOffset]);
+    }, [isDragging, dragOffset, handleMouseMove, handleMouseUp]);
 
     return (
         <>
@@ -164,7 +167,7 @@ export default function FeatureSection() {
 
             <div
                 ref={containerRef}
-                className="w-full h-screen bg-[#fcfdf6] flex items-center justify-center overflow-hidden relative"
+                className="w-full min-h-screen lg:min-h-[120vh] bg-[#fcfdf6] flex flex-col justify-center overflow-hidden relative py-8 sm:py-12 md:py-16 lg:py-20"
                 onMouseDown={handleMouseDown}
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
@@ -173,16 +176,18 @@ export default function FeatureSection() {
                 onTouchEnd={handleTouchEnd}
                 style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
             >
+                <div className="relative w-full max-w-7xl mx-auto px-4 md:px-8 flex flex-col justify-center min-h-full">
+                    {/* Header */}
+                    <div className="text-center mb-8 sm:mb-12 md:mb-16 lg:mb-20 xl:mb-24">
+                        <h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-tight text-[#080c04] leading-tight'>
+                            Powerful Features for{" "}
+                            <br className="hidden sm:block" />
+                            <span className="text-[#F0db18]"> Carbon Reduction </span>
+                        </h2>
+                    </div>
 
-
-                <div className="relative w-full h-full max-w-7xl px-4 md:px-8">
-                    <h2 className='text-6xl md:text-7xl font-semibold tracking-tight text-center text-[#080c04] '>
-                        Powerful Features for{" "}
-                        <span className="text-[#F0db18]"> Carbon Reduction </span>
-                    </h2>
-
-                    <div className="relative w-full h-full flex items-center justify-center">
-                        {/* Cards - z-index managed individually (5 for sides, 20 for center) */}
+                    {/* Cards Container */}
+                    <div className="relative w-full flex-1 flex items-center justify-center min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[550px] xl:min-h-[600px]">
                         {cards.map((card, index) => (
                             <Card
                                 color={''}

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import LocomotiveScrollProvider from "./LocomotiveScrollProvider";
 
 gsap.registerPlugin(ScrollTrigger);
 

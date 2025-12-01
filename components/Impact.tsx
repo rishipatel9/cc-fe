@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
 import { SplitText } from "gsap/SplitText"
-import SplitTextAnimation from "./animations/anim"
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -37,11 +36,12 @@ const ImpactSection = () => {
   ]
 
   useEffect(() => {
-    const items = itemsRef.current.filter(Boolean)
-    const numbers = numbersRef.current.filter(Boolean)
-    const descriptions = descriptionsRef.current.filter(Boolean)
+    // Ensure all refs are properly set and elements exist
+    const items = itemsRef.current.filter(Boolean) as HTMLDivElement[]
+    const numbers = numbersRef.current.filter(Boolean) as HTMLDivElement[]
+    const descriptions = descriptionsRef.current.filter(Boolean) as HTMLParagraphElement[]
 
-    if (items.length === 0) return
+    if (items.length === 0 || numbers.length === 0 || descriptions.length === 0) return
 
     // Set initial state for descriptions
     gsap.set(descriptions, {
@@ -50,6 +50,9 @@ const ImpactSection = () => {
     })
 
     items.forEach((item, index) => {
+      // Check if the current number element exists
+      if (!numbers[index]) return
+
       // Split text for number animation
       const splitNumber = new SplitText(numbers[index], { 
         type: "chars",
@@ -65,7 +68,6 @@ const ImpactSection = () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: item,
-          scroller: "[data-scroll-container]",
           start: "top 80%",
           end: "top 50%",
           toggleActions: "play none none reverse",
@@ -97,7 +99,14 @@ const ImpactSection = () => {
     })
 
     return () => {
+      // Cleanup SplitText instances and ScrollTriggers
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+      items.forEach((_, index) => {
+        const splitInstance = (numbers[index] as any)?._splitText
+        if (splitInstance) {
+          splitInstance.revert()
+        }
+      })
     }
   }, [])
 
@@ -148,8 +157,6 @@ const ImpactSection = () => {
           ))}
         </div>
       </div>
-
-      {/* <div className="w-full border-t border-dashed border-text/10 mt-12"></div> */}
     </section>
   )
 }

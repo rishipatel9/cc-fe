@@ -47,7 +47,7 @@ const steps: Step[] = [
   },
 ];
 
-export default function HowItWorks() {
+export default function HowItWorksCopy() {
   const [activeStep, setActiveStep] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
@@ -135,6 +135,7 @@ export default function HowItWorks() {
                       style={{ opacity: isActive ? 1 : 0.3 }}
                     >
                       {/* Icon with Rotating Outline */}
+                      
                       <div className="relative h-10 w-10">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +161,8 @@ export default function HowItWorks() {
                             </svg>
                           </div>
                         </div>
-                      </div>
+                      </div> 
+                     
                       
                       {/* Title with Double Layer Reveal */}
                       <h2 className="-mb-2.5 overflow-clip font-medium text-2xl md:text-4xl text-[#080c04]">
